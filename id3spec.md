@@ -1,5 +1,5 @@
 # ID3 Spec
-Taken from [WikiPedia ID3](https://en.wikipedia.org/wiki/ID3
+Taken from [WikiPedia ID3](https://en.wikipedia.org/wiki/ID3)
 
 v2.3 | v2.4   | Name
 -----|--------|--------
