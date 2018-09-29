@@ -30,9 +30,8 @@ def extractText(data_text):
 def extractMetadata():
     print("Inputfile: {}".format(inputfile))
     mp3 = mutagen.File(inputfile)
-#    print(mp3.pprint())
     print(mp3.keys())
-
+    metadata = dict()
     for key in mp3.keys():
         data = mp3.tags.getall(key)
         for d in data:
