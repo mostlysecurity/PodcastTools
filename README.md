@@ -12,6 +12,8 @@ Our basic tools for Workflow:
 * [Libsyn](https://www.libsyn.com/) for hosting the podcast as well as the [Mostly Security Podcast Blog](http://podcast.mostlysecurity.net/)
 * [GitHub](https://www.github.com/mostlysecurity) for hosting the [Mostly Security](https://mostlysecurity.com) homepage and any tools we build
 
+# Tools
+
 ### pullmetada.py
 After we have created the Forecast MP3 with titles, chapter, urls, etc; we were doing a bit of hand editing the Libsyn blog page.  This tools simply extracts the ID3 tags and outputs to JSON, Markdown or HTML.  It is very much a work in progress, and tailored to how we publish stuff into libsyn, but it was a simple optimization to save some time.
 
