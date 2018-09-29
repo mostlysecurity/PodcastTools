@@ -20,6 +20,12 @@ inputfile = None
 
 __version__ = '1.0.0'
 
+def extractText(data_text):
+    text = ''
+    for t in data_text:
+        text+=t
+
+    return text
 
 def extractMetadata():
     print("Inputfile: {}".format(inputfile))
@@ -28,7 +34,32 @@ def extractMetadata():
     print(mp3.keys())
 
     for key in mp3.keys():
-        print(mp3.tags.getall(key))
+        data = mp3.tags.getall(key)
+        for d in data:
+            if isinstance(d, mutagen.id3.TALB):
+                print("TALB: {}".format(extractText(d.text)))
+            elif isinstance(d, mutagen.id3.TPE1):
+                print("TPE1: {}".format(extractText(d.text)))
+            elif isinstance(d, mutagen.id3.TPE2):
+                print("TPE2: {}".format(extractText(d.text)))
+            elif isinstance(d, mutagen.id3.TPE3):
+                print("TPE3: {}".format(extractText(d.text)))
+            elif isinstance(d, mutagen.id3.TPE4):
+                print("TPE4: {}".format(extractText(d.text)))
+            elif isinstance(d, mutagen.id3.TIT1):
+                print("TIT1: {}".format(extractText(d.text)))
+            elif isinstance(d, mutagen.id3.TIT2):
+                print("TIT2: {}".format(extractText(d.text)))
+            elif isinstance(d, mutagen.id3.TIT3):
+                print("TIT3: {}".format(extractText(d.text)))
+            elif isinstance(d, mutagen.id3.COMM):
+                print("COMM: {}".format(extractText(d.text)))
+            elif isinstance(d, mutagen.id3.USLT):
+                print("USLT: {}".format(extractText(d.text)))
+            elif isinstance(d, mutagen.id3.APIC):
+                print("APIC: Image data")
+            else:
+                print(type(d))
         print("-------")
 
 
