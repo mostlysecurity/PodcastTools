@@ -18,6 +18,8 @@ except ImportError:
 #Global variables.  Don't judge me.
 debug = False
 inputfile = None
+output = "MD"
+
 
 __version__ = '1.0.0'
 
@@ -96,7 +98,33 @@ def extractMetadata():
                 metadata['APIC'] = "Has Image Data"
             else:
                 metadata[type(d).__name__] = "Unknown type, fixme"
-    print(json.dumps(metadata, indent=2))
+    return metadata
+
+
+def createMarkdown(metadata):
+    print("")
+    print(metadata['USLT'])
+    print("")
+    for cch in metadata['CTOC']:
+        ch = metadata['CHAP'][cch]
+        if ch.get('url'):
+            print("[{}]({})".format(ch.get('text'), ch.get('url')))
+        else:
+            print("{}".format(ch.get('text')))
+    print("")
+
+
+def createHTML(metadata):
+    print('')
+    print('<p>{}</p>'.format(metadata['USLT']))
+    print('<ul>')
+    for cch in metadata['CTOC']:
+        ch = metadata['CHAP'][cch]
+        if ch.get('url'):
+            print('<li><a href="{}">{}</a></li>'.format(ch.get('url'), ch.get('text')))
+        else:
+            print('<li>{}</li>'.format(ch.get('text')))
+    print('</ul>')
 
 
 def version():
@@ -104,7 +132,7 @@ def version():
 
 
 def parseCommandLine():
-    global debug, inputfile
+    global debug, inputfile, output
     description = (
             'Script to pull the metadata out of a Podcast '
             'and format it.\n'
@@ -120,6 +148,7 @@ def parseCommandLine():
         pass
     parser.add_argument('-v', '--version', action='store_true', help='Show version numbers and exit')
     parser.add_argument('-i', '--inputfile', help='Specify the podcast file to extract')
+    parser.add_argument('-o', '--output', help="Specify format of output: MD, JSON, HTML", default=output)
     parser.add_argument('-d', '--debug', action='store_true', help='Prints extra stuff to stdout')
     
     options = parser.parse_args()
@@ -137,12 +166,26 @@ def parseCommandLine():
 
     if args.inputfile:
         inputfile = args.inputfile
+    
+    if args.output:
+        output = args.output
+        output = output.upper()
 
     if inputfile == None or inputfile == '':
         print("inputfile cannot be empty")
         raise SystemExit()
 
-    extractMetadata()
+    metadata = extractMetadata()
+
+    if output == 'JSON':
+        print(json.dumps(metadata, indent=2))
+    elif output == 'MD':
+        createMarkdown(metadata)
+    elif output == 'HTML':
+        createHTML(metadata)
+    else:
+        print("Unknown output type: {}".format(output))
+
         
 
 def main():
