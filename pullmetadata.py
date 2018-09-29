@@ -67,7 +67,7 @@ def appendChapterData(chap, chapdata):
         elif frame == 'WXXX:chapter url':
             ch['url'] = extractURL(chap.sub_frames['WXXX:chapter url'])
         else:
-            ch[frame] = "unknown type: {}".format(chap.sub_frames[frame].__name__)
+            ch[frame] = "unknown type: {}".format(type(chap.sub_frames[frame]).__name__)
 
     chapdata[chap.element_id] = ch
     return chapdata
@@ -92,15 +92,10 @@ def extractMetadata():
                 metadata['CTOC'] = extractChapterTOC(d)
             elif isinstance(d, id3.CHAP):
                 metadata['CHAP'] = appendChapterData(d, metadata['CHAP'])
-            # elif isinstance(d, id3.TIT2):
-            # elif isinstance(d, id3.TIT3):
-            # elif isinstance(d, id3.COMM):
-            # elif isinstance(d, id3.USLT):
             elif isinstance(d, id3.APIC):
                 metadata['APIC'] = "Has Image Data"
             else:
-                printd("")
-                printd(data)
+                metadata[type(d).__name__] = "Unknown type, fixme"
     print(json.dumps(metadata, indent=2))
 
 
