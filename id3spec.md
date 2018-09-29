@@ -93,6 +93,6 @@ WPUB |        | Publishers official webpage
 WXXX |        | User defined URL link frame
 
 Notes:
-IPLS of ID3v2.3 maps both to TIPL (the "involved people list") and to TMCL (the "musician credits list").
-TDRC (recording time) consolidates TDAT (date), TIME (time), TRDA (recording dates), and TYER (year).
-TCOM, TEXT, TOLY, TOPE, and TPE1 can contain multiple values separated by a foreslash ("/").
+* IPLS of ID3v2.3 maps both to TIPL (the "involved people list") and to TMCL (the "musician credits list").
+* TDRC (recording time) consolidates TDAT (date), TIME (time), TRDA (recording dates), and TYER (year).
+* TCOM, TEXT, TOLY, TOPE, and TPE1 can contain multiple values separated by a foreslash ("/").

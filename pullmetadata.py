@@ -8,6 +8,7 @@ import time
 import traceback
 import json
 import mutagen
+from mutagen import id3
 
 try:
     from argparse import ArgumentParser as ArgParser
@@ -20,47 +21,87 @@ inputfile = None
 
 __version__ = '1.0.0'
 
-def extractText(data_text):
-    text = ''
-    for t in data_text:
-        text+=t
+def extractText(d):
+    if len(d.text) > 1:
+        return d.text
+    else:
+        return d.text[0]
 
-    return text
+def isText(d):
+    texttypes = [id3.TALB, id3.TPE1, id3.TPE2, id3.TPE3, id3.TIT1, id3.TIT2, id3.TIT3, id3.TENC, id3.TLEN, id3.COMM, id3.USLT]
+    is_text = False
+    for t in texttypes:
+        if isinstance(d, t):
+            is_text = True
+            break
+    return is_text
+
+def extractTimestamp(d):
+    return d.text[0].get_text()
+
+def isTimestamp(d):
+    tstypes = [id3.TDRC, id3.TYER]
+    is_ts = False
+    for t in tstypes:
+        if isinstance(d, t):
+            is_ts = True
+            break
+    return is_ts
+
+def extractURL(wxxx):
+    return wxxx.url
+
+def extractChapterTOC(ctoc):
+    return ctoc.child_element_ids
+
+def appendChapterData(chap, chapdata):
+    ch = dict()
+    ch['start_time'] = chap.start_time
+    ch['end_time'] = chap.end_time
+    ch['start_offset'] = chap.start_offset
+    ch['end_offset'] = chap.end_offset
+
+    for frame in chap.sub_frames:
+        if frame == 'TIT2':
+            ch['text'] = extractText(chap.sub_frames['TIT2'])
+        elif frame == 'WXXX:chapter url':
+            ch['url'] = extractURL(chap.sub_frames['WXXX:chapter url'])
+        else:
+            ch[frame] = "unknown type: {}".format(chap.sub_frames[frame].__name__)
+
+    chapdata[chap.element_id] = ch
+    return chapdata
+
+def printd(txt):
+    if debug:
+        print(txt)
 
 def extractMetadata():
-    print("Inputfile: {}".format(inputfile))
+    printd("Inputfile: {}".format(inputfile))
     mp3 = mutagen.File(inputfile)
-    print(mp3.keys())
     metadata = dict()
+    metadata['CHAP'] = dict()
     for key in mp3.keys():
         data = mp3.tags.getall(key)
         for d in data:
-            if isinstance(d, mutagen.id3.TALB):
-                print("TALB: {}".format(extractText(d.text)))
-            elif isinstance(d, mutagen.id3.TPE1):
-                print("TPE1: {}".format(extractText(d.text)))
-            elif isinstance(d, mutagen.id3.TPE2):
-                print("TPE2: {}".format(extractText(d.text)))
-            elif isinstance(d, mutagen.id3.TPE3):
-                print("TPE3: {}".format(extractText(d.text)))
-            elif isinstance(d, mutagen.id3.TPE4):
-                print("TPE4: {}".format(extractText(d.text)))
-            elif isinstance(d, mutagen.id3.TIT1):
-                print("TIT1: {}".format(extractText(d.text)))
-            elif isinstance(d, mutagen.id3.TIT2):
-                print("TIT2: {}".format(extractText(d.text)))
-            elif isinstance(d, mutagen.id3.TIT3):
-                print("TIT3: {}".format(extractText(d.text)))
-            elif isinstance(d, mutagen.id3.COMM):
-                print("COMM: {}".format(extractText(d.text)))
-            elif isinstance(d, mutagen.id3.USLT):
-                print("USLT: {}".format(extractText(d.text)))
-            elif isinstance(d, mutagen.id3.APIC):
-                print("APIC: Image data")
+            if isText(d):
+                metadata[type(d).__name__] = extractText(d)
+            elif isTimestamp(d):
+                metadata[type(d).__name__] = extractTimestamp(d)
+            elif isinstance(d, id3.CTOC):
+                metadata['CTOC'] = extractChapterTOC(d)
+            elif isinstance(d, id3.CHAP):
+                metadata['CHAP'] = appendChapterData(d, metadata['CHAP'])
+            # elif isinstance(d, id3.TIT2):
+            # elif isinstance(d, id3.TIT3):
+            # elif isinstance(d, id3.COMM):
+            # elif isinstance(d, id3.USLT):
+            elif isinstance(d, id3.APIC):
+                metadata['APIC'] = "Has Image Data"
             else:
-                print(type(d))
-        print("-------")
-
+                printd("")
+                printd(data)
+    print(json.dumps(metadata, indent=2))
 
 
 def version():
