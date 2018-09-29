@@ -1,7 +1,3 @@
-# PodcastTools
-Various tools for the Mostly Security podcast
-
-
 # Tools we use for the Mostly Security Podcast
 Our basic tools for Workflow:
 * [Skype](https://www.skype.com/) for our remote comms
