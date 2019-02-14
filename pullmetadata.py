@@ -18,8 +18,8 @@ except ImportError:
 #Global variables.  Don't judge me.
 debug = False
 inputfile = None
-output = "MD"
-
+output = "HTML"
+showtime = False
 
 __version__ = '1.0.0'
 
@@ -100,6 +100,20 @@ def extractMetadata():
                 metadata[type(d).__name__] = "Unknown type, fixme"
     return metadata
 
+def getStartTime(starttime):
+    # convert starttime millis into minutes:seconds
+    millis = int(starttime)
+    seconds=(millis/1000)%60
+    seconds = int(seconds)
+    minutes=(millis/(1000*60))%60
+    minutes = int(minutes)
+    hours=(millis/(1000*60*60))%24
+    hours = int(hours)
+    if hours > 0:
+        return "%d:%02d:%02d" % (hours, minutes, seconds)
+    else:
+        return "%d:%02d" % (minutes, seconds)
+    return ""
 
 def createMarkdown(metadata):
     print("")
@@ -113,17 +127,21 @@ def createMarkdown(metadata):
             print("{}".format(ch.get('text')))
     print("")
 
-
 def createHTML(metadata):
     print('')
     print('<p>{}</p>'.format(metadata['USLT']))
     print('<ul>')
     for cch in metadata['CTOC']:
         ch = metadata['CHAP'][cch]
+        st = ""
+        std = ""
+        if ch.get('start_time') and showtime:
+            st = getStartTime(ch.get('start_time'))
+            std = " - "
         if ch.get('url'):
-            print('<li><a href="{}">{}</a></li>'.format(ch.get('url'), ch.get('text')))
+            print('<li>{}{}<a href="{}">{}</a></li>'.format(st, std, ch.get('url'), ch.get('text')))
         else:
-            print('<li>{}</li>'.format(ch.get('text')))
+            print('<li>{}{}{}</li>'.format(st, std, ch.get('text')))
     print('</ul>')
 
 
@@ -132,7 +150,7 @@ def version():
 
 
 def parseCommandLine():
-    global debug, inputfile, output
+    global debug, inputfile, output, showtime
     description = (
             'Script to pull the metadata out of a Podcast '
             'and format it.\n'
@@ -148,6 +166,7 @@ def parseCommandLine():
         pass
     parser.add_argument('-v', '--version', action='store_true', help='Show version numbers and exit')
     parser.add_argument('-i', '--inputfile', help='Specify the podcast file to extract')
+    parser.add_argument('-s', '--showtime', action='store_true', help='Display the start time of each segment')
     parser.add_argument('-o', '--output', help="Specify format of output: MD, JSON, HTML", default=output)
     parser.add_argument('-d', '--debug', action='store_true', help='Prints extra stuff to stdout')
     
@@ -163,6 +182,9 @@ def parseCommandLine():
     
     if args.debug:
         debug = args.debug
+
+    if args.showtime:
+        showtime = args.showtime
 
     if args.inputfile:
         inputfile = args.inputfile
