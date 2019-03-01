@@ -135,7 +135,7 @@ def createHTML(metadata):
         ch = metadata['CHAP'][cch]
         st = ""
         std = ""
-        if ch.get('start_time') and showtime:
+        if showtime:
             st = getStartTime(ch.get('start_time'))
             std = " - "
         if ch.get('url'):
