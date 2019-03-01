@@ -121,7 +121,7 @@ def createHTML(metadata):
     for cch in metadata['CTOC']:
         ch = metadata['CHAP'][cch]
         if ch.get('url'):
-            print('<li><a href="{}">{}</a></li>'.format(ch.get('url'), ch.get('text')))
+            print('<li><a href="{}" target="_blank">{}</a></li>'.format(ch.get('url'), ch.get('text')))
         else:
             print('<li>{}</li>'.format(ch.get('text')))
     print('</ul>')
