@@ -121,10 +121,15 @@ def createMarkdown(metadata):
     print("")
     for cch in metadata['CTOC']:
         ch = metadata['CHAP'][cch]
+        st = ""
+        std = ""
+        if showtime:
+            st = getStartTime(ch.get('start_time'))
+            std = " - "
         if ch.get('url'):
-            print("[{}]({})".format(ch.get('text'), ch.get('url')))
+            print("{}{}[{}]({})".format(st,std,ch.get('text'), ch.get('url')))
         else:
-            print("{}".format(ch.get('text')))
+            print("{}{}{}".format(st,std,ch.get('text')))
     print("")
 
 def createHTML(metadata):
