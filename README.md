@@ -3,7 +3,6 @@ Our basic tools for Workflow:
 * [Skype](https://www.skype.com/) for our remote comms
 * [Piezo](https://rogueamoeba.com/piezo/) for recording the Skype calls (mostly for backup)
 * [QuickTime](https://support.apple.com/downloads/quicktime) for recording individual audio feeds
-* [Audacity](https://www.audacityteam.org/) for combining the QuickTime audio tracks and editing, exporting to WAV
 * [Ferrite](https://www.wooji-juice.com/products/ferrite/) for combining and editing (this has generally replaced Audacity)
 * [Forecast](https://overcast.fm/forecast) to convert the Audacity WAV to MP3 and add in all the fancy ID3 tags and chapter markers, etc
 * [Libsyn](https://www.libsyn.com/) for hosting the podcast as well as the [Mostly Security Podcast Blog](http://podcast.mostlysecurity.net/)
