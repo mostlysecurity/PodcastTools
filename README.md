@@ -5,7 +5,7 @@ Our basic tools for Workflow:
 * [QuickTime](https://support.apple.com/downloads/quicktime) for recording individual audio feeds (also mostly for backup)
 * [Audio Hijack](https://rogueamoeba.com/audiohijack/) for the main individual audio feeds
 * [Ferrite](https://www.wooji-juice.com/products/ferrite/) for combining and editing (this has generally replaced Audacity)
-* [Forecast](https://overcast.fm/forecast) to convert the Audacity WAV to MP3 and add in all the fancy ID3 tags and chapter markers, etc
+* [Forecast](https://overcast.fm/forecast) to add in all the fancy ID3 tags and chapter markers, etc
 * [Libsyn](https://www.libsyn.com/) for hosting the podcast as well as the [Mostly Security Podcast Blog](http://podcast.mostlysecurity.net/)
 * [GitHub](https://www.github.com/mostlysecurity) for hosting the [Mostly Security](https://mostlysecurity.com) homepage and any tools we build
 
