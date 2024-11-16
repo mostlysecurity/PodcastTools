@@ -2,3 +2,7 @@
 #
 # Run 'pip install -r requirements.txt' to install these dependencies
 mutagen>=1.41.1
+typing
+requests
+bs4
+python-dotenv
