@@ -426,9 +426,16 @@ def main():
         if podcasturl:
             post_title = title
             if episode > 0:
-                if title.startswith(f"{episode}"):
+                if title.startswith(f"Episode {episode}:"):
+                    post_title = title
+                elif title.startswith(f"{episode}:"):
+                    post_title = f"Episode {episode}: {title[4:].strip()}"
+                else:
                     post_title = f"Episode {episode}: {title}"
-                
+            else:
+                print(f"Missing episode number")
+                raise SystemExit(-1)
+
             postToBsky(bskybot, post_title, podcasturl)
 
     except Exception as e:
