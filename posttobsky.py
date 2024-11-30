@@ -294,7 +294,15 @@ class BlueskyPostBot:
                 post["facets"] = facets
 
         if link:
-            post["embed"] = self.fetch_embed_url_card(pds_url, session["accessJwt"], link)
+            try: 
+                post["embed"] = self.fetch_embed_url_card(pds_url, session["accessJwt"], link)
+            except Exception as e:
+                print(f"embed: {e}")
+                post["text"] = f"{text} - {link}"
+                if len(post["text"]) > 0:
+                    facets = self.parse_facets(pds_url, post["text"])
+                    if facets:
+                        post["facets"] = facets
 
         print("creating post:", file=sys.stderr)
         print(json.dumps(post, indent=2), file=sys.stderr)
@@ -308,9 +316,29 @@ class BlueskyPostBot:
                 "record": post,
             },
         )
-        print("createRecord response:", file=sys.stderr)
-        print(json.dumps(resp.json(), indent=2))
-        resp.raise_for_status()
+
+        if resp.status_code != 200:
+            post["text"] = f"{text} - {link}"
+            if len(post["text"]) > 0:
+                facets = self.parse_facets(pds_url, post["text"])
+                if facets:
+                    post["facets"] = facets
+            resp = requests.post(
+                pds_url + "/xrpc/com.atproto.repo.createRecord",
+                headers={"Authorization": "Bearer " + session["accessJwt"], 'User-Agent': useragent},
+                json={
+                    "repo": session["did"],
+                    "collection": "app.bsky.feed.post",
+                    "record": post,
+                },
+            )
+            print(f"createRecord response {resp.status_code}:", file=sys.stderr)
+            print(json.dumps(resp.json(), indent=2))
+            resp.raise_for_status()
+        else:
+            print("createRecord response:", file=sys.stderr)
+            print(json.dumps(resp.json(), indent=2))
+            resp.raise_for_status()
 
 # def parseCommandLine_old():
 #     parser = ArgParser(description="bsky.app post upload example script")
