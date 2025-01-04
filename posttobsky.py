@@ -266,7 +266,24 @@ class BlueskyPostBot:
         }
 
 
-    def create_post(self, text, link=None):
+    # def try_just_text(self, text):
+        # post["text"] = f"{text} - {link}"
+        # if len(post["text"]) > 0:
+        #     facets = self.parse_facets(pds_url, post["text"])
+        #     if facets:
+        #         post["facets"] = facets
+        # resp = requests.post(
+        #     pds_url + "/xrpc/com.atproto.repo.createRecord",
+        #     headers={"Authorization": "Bearer " + session["accessJwt"], 'User-Agent': useragent},
+        #     json={
+        #         "repo": session["did"],
+        #         "collection": "app.bsky.feed.post",
+        #         "record": post,
+        #     },
+        # )
+
+
+    def create_post(self, text, link=None, useimage=True):
         load_dotenv(self.configfile, override=True)
         pds_url=os.environ.get("ATP_PDS_HOST") or "https://bsky.social"
         handle=os.environ.get("ATP_AUTH_HANDLE")
@@ -293,7 +310,7 @@ class BlueskyPostBot:
             if facets:
                 post["facets"] = facets
 
-        if link:
+        if link and useimage:
             try: 
                 post["embed"] = self.fetch_embed_url_card(pds_url, session["accessJwt"], link)
             except Exception as e:
@@ -303,6 +320,12 @@ class BlueskyPostBot:
                     facets = self.parse_facets(pds_url, post["text"])
                     if facets:
                         post["facets"] = facets
+        elif link and not useimage:
+            post["text"] = f"{text} - {link}"
+            if len(post["text"]) > 0:
+                facets = self.parse_facets(pds_url, post["text"])
+                if facets:
+                    post["facets"] = facets
 
         print("creating post:", file=sys.stderr)
         print(json.dumps(post, indent=2), file=sys.stderr)
@@ -318,23 +341,11 @@ class BlueskyPostBot:
         )
 
         if resp.status_code != 200:
-            post["text"] = f"{text} - {link}"
-            if len(post["text"]) > 0:
-                facets = self.parse_facets(pds_url, post["text"])
-                if facets:
-                    post["facets"] = facets
-            resp = requests.post(
-                pds_url + "/xrpc/com.atproto.repo.createRecord",
-                headers={"Authorization": "Bearer " + session["accessJwt"], 'User-Agent': useragent},
-                json={
-                    "repo": session["did"],
-                    "collection": "app.bsky.feed.post",
-                    "record": post,
-                },
-            )
             print(f"createRecord response {resp.status_code}:", file=sys.stderr)
             print(json.dumps(resp.json(), indent=2))
-            resp.raise_for_status()
+            # resp.raise_for_status()
+            print("Trying again without images")
+            self.create_post(text, link, useimage=False)
         else:
             print("createRecord response:", file=sys.stderr)
             print(json.dumps(resp.json(), indent=2))
