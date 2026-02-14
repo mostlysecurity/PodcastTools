@@ -1,7 +1,7 @@
 # Tools we use for the Mostly Security Podcast
 Our basic tools for Workflow:
-* [Skype](https://www.skype.com/) for our remote comms
-* [Piezo](https://rogueamoeba.com/piezo/) for recording the Skype calls (mostly for backup)
+* [Facetime](https://apps.apple.com/us/app/facetime/id1110145091) for our remote comms
+* [Piezo](https://rogueamoeba.com/piezo/) for recording the Facetime calls (mostly for backup)
 * [QuickTime](https://support.apple.com/downloads/quicktime) for recording individual audio feeds (also mostly for backup)
 * [Audio Hijack](https://rogueamoeba.com/audiohijack/) for the main individual audio feeds
 * [Ferrite](https://www.wooji-juice.com/products/ferrite/) for combining and editing (this has generally replaced Audacity)
